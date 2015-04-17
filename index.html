@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Font load</title>
+
+<script>
+// Перед использованием минифицировать
+
+// @fontLsKey - ключ шрифта в Local Storage
+// Проверяем, если в Local Storage нет CSS файла со шрифтом
+// то грузим по ссылке @fontUrl, сохраняем в Local Storage и вставляем в head инлайном
+
+(function(){
+
+'use strict';
+
+	var fontLsKey = 'sourceRoboto_v1',
+		fontUrl = 'source-roboto.woff.min.css';
+	
+	function createStyle(txt) {
+	 
+		var style = document.createElement('style');
+		
+		style.textContent = txt;
+		style.rel = 'stylesheet';
+		document.head.appendChild(style);
+		
+	}
+
+	try {
+	
+		if (localStorage[fontLsKey]) {
+		
+			createStyle(localStorage[fontLsKey]);
+			
+		} else {
+		
+			var request = new XMLHttpRequest();
+			request.open('GET', fontUrl, true);
+
+			request.onload = function() {
+			
+				if (request.status >= 200 && request.status < 400) {
+				
+					localStorage[fontLsKey] = request.responseText;
+					createStyle(request.responseText);
+					
+				}
+				
+			}
+
+			request.send();
+			
+		}
+	} catch(ex) { console.error(ex); }
+
+})();
+</script>
+
+</head>
+<body>
+	<p>tada...</p>
+</body>
+</html>
